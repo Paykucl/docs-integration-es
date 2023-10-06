@@ -14,6 +14,9 @@ servers:
     description: Default server
   - url: "https://des.liset.cl"
     description: Sandbox server
+info:
+  description: |
+    Seleccione el idioma de la documentación: ES | <a href="https://endocs.payku.cl/">EN</a>
 paths:
   /api/liset:
     post:
