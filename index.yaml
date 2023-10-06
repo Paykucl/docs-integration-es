@@ -14,6 +14,339 @@ servers:
     description: Default server
   - url: "https://des.liset.cl"
     description: Sandbox server
+    info:
+  description: |
+    Seleccione el idioma de la documentación: ES | <a href="https://endocs.payku.cl/">EN</a>
+
+    <div style="
+    background: #2F39D1;
+    width:100%;
+    height:6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    ">
+    <strong style="color: #fff">Nuevo: Puedes realizar pruebas en vivo de nuestra API</strong>
+    <a style="
+    margin-top:0.7rem;
+    background: #fff;
+    border: 1px solid rgb(50, 50, 159);
+    color: rgb(50, 50, 159);
+    font-weight: normal;
+    margin-left: 0.5em;
+    width:20%;
+    padding: 4px 8px;
+    display: inline-block;
+    text-decoration: none;
+    cursor: pointer;
+    text-align: center"
+    href="https://testing-apirest.payku.cl/"
+    target="_blanck" rel=”noopener noreferrer”
+    onMouseOver="this.style.color='#000', this.style.background='#DBDBDB'"
+    onMouseOut="this.style.color='#2F39D1', this.style.background='#fff'"
+    ">Prueba
+    </a>
+    </div>
+
+    # Introducción
+    Bienvenido a la API de payku. Puedes usar nuestra API para acceder a los distintos
+    endpoints de payku, donde podrás generar y gestionar pagos mediante distintos
+    métodos y obtener información de ellos.
+
+    El API está organizado alrededor de REST. Posee URLs predecibles y
+    orientadas a recursos, y utiliza códigos de respuesta HTTP para indicar el
+    resultado de la llamada. Todas las respuestas de la API retornan objetos
+    JSON, incluyendo los errores.
+
+    El solicitante debe buscar un código de resultado 200. Si se recibe
+    cualquier código de resultado distinto de 200, la solicitud o la respuesta
+    no es válida, lo que significa que los campos no pasaron los controles de
+    validación de parte de payku. Utilizamos características incluidas en el
+    protocolo HTTP, como autenticación, los cuales son soportados por la gran
+    mayoría de los clientes HTTP.
+
+    # Autenticación
+    payku utiliza Token Based Authentication sobre HTTPS para la autenticación. Para tener acceso a nuestra API, accede a tu cuenta en la sección de Integración encontrarás la opción de Tokens integración y API. Los request no autenticados o incorrectos retornarán una respuesta de token Invalido.
+
+
+    # API Seguridad
+    Cada solicitud es requerido tener incluido en el header:
+      - Authorization: Bearer **TOKEN-PÚBLICO**
+
+    # Firma
+
+    En el caso del API de suscripciones y mall se agregó una capa más de seguridad a través de una firma que se envía en el header del request, para obtener dicha firma es necesario lo siguiente:
+
+    Se debe concatenar en formato para url el Request Path junto a todos los parámetros del request, los cuales deben ser ordenados alfabéticamente por key, tal que key=value. Por lo tanto, si el valor de email cliente es “example@domain.com” el formato correcto sería “example%40domain.com” y luego concatenados con el carácter ‘&’.
+
+    Una vez que los sets de caracteres son ordenados y concatenados, el hash es calculado usando la función HMAC con cifrado tipo sha256, y el token privado.
+
+    **Nota:** Si un elemento de la data, tiene como valor un objeto o arreglo, se excluye de la data. Esta función esta en el ejemplo de PHP y de Javascript.
+
+    ### Ejemplo PHP
+    Endpoint de la API:
+    ```php
+    $request_path = urlencode('/api/suclient');
+    ```
+    Ordenando los parámetros:
+    ```php
+    $data = [
+      'email' => 'johndoe@example.com',
+      'name' => 'John Doe',
+      'phone' => '923122312',
+      'address' => 'Moneda 101',
+      'country' => 'Chile',
+      'region' => 'Metropolitana',
+      'city' => 'Santiago',
+      'postal_code' => '850000',
+      'additional_parameters' => [
+        'parameter_1' => 'example',
+        'parameter_2' => 'example 2',
+      ]
+    ];
+    ksort($data);
+    ```
+    Transformación de los parámetros a formato url:
+    ```php
+        $contador = 0;
+        $concatenar = null;
+
+        if (!empty($data) && !is_null($data)) {
+            foreach ($data as $key => $val) {
+                if(gettype($val)!='array' && gettype($val)!='object'){
+                    if ($contador>0) {
+                        $concatenar .= '&';
+                    }
+                    $concatenar .= $key . '=' . urlencode($val);
+                }
+                $contador++;
+            }
+        };
+    ```
+    Concatenación de los parámetros en formato url con el endpoint de la API:
+    ```php
+    $concat = $request_path.'&'.$concatenar;
+    ```
+    Firma:
+    ```php
+    $sign = hash_hmac('sha256', $concat, 'fe551abcef62fcf002dc598922e68f0a');
+    ```
+
+    ### Ejemplo JavaScript
+    Importar dependencia CryptoJS:
+    ```javascript
+    const CryptoJS = require("crypto-js");
+    ```
+    Endpoint de la API:
+    ```javascript
+    const requestPath = encodeURIComponent('/api/suclient');
+    ```
+    Ordenando los parámetros:
+    ```javascript
+    const data = {
+      email: "johndoe@example.com",
+      name: "John Doe",
+      phone: "923122312",
+      address: "Moneda 101",
+      country: "Chile",
+      region: "Metropolitana",
+      city: "Santiago",
+      postal_code: "850000"
+    };
+    const orderedData = {};
+    Object.keys(data).sort().forEach(function(key) {
+      orderedData[key] = data[key];
+      if (typeof orderedData[key] === 'object') {
+            delete orderedData[key];
+      }
+    });
+    ```
+    Transformación de los parámetros a formato url:
+    ```javascript
+    const arrayConcat = new URLSearchParams(orderedData).toString();
+    ```
+    Concatenación de los parámetros en formato url con el endpoint de la API:
+    ```javascript
+    const concat = requestPath + "&" + arrayConcat;
+    ```
+    Firma:
+    ```javascript
+    const sign = CryptoJS.HmacSHA256(concat, "fe551abcef62fcf002dc598922e68f0a").toString();
+    ```
+
+    El resultado de la firma obtenida para ambos ejemplos es:
+
+    ```javascript
+    "d891663698d31aa8b68babe96ac6497f5a0d874024368102998d5b79a4d12c36"
+    ```
+    # Errores
+    payku usa respuestas HTTP convencionales para indicar el éxito o fracaso de un request.
+    En general, códigos en el rango de los 2xx indican éxito, códigos en el rango 4xx indican
+    un error que falló debido a la información proporcionada (ej: un parámetro requerido fue
+    omitido, un pago falló, etc.), y códigos en el rango de los 5xx indican un error con
+    los servidores de payku (estos son raros).
+
+    ## Códigos de error
+    <div class="errorContent">
+    <table>
+      <tbody>
+        <tr>
+          <td style="text-align: right"><strong class="errorTitle">400</strong>
+            <p class="psmall">Bad Request</p>
+          </td>
+          <td class="errorDescription">Hay un problema con tu request</td>
+        </tr>
+        <tr>
+          <td style="text-align: right"><strong class="errorTitle">401</strong>
+            <p class="psmall">Unauthorized</p>
+          </td>
+          <td class="errorDescription">Tu token es incorrecto o error de firma</td>
+        </tr>
+        <tr>
+          <td style="text-align: right"><strong class="errorTitle">403</strong>
+            <p class="psmall">Forbidden</p>
+          </td>
+          <td class="errorDescription">No tienes permiso para ver esta página</td>
+        </tr>
+        <tr>
+          <td style="text-align: right"><strong class="errorTitle">404</strong>
+            <p class="psmall">Not Found</p>
+          </td>
+          <td class="errorDescription">El recurso especificado no fue encontrado </td>
+        </tr>
+        <tr>
+          <td style="text-align: right"><strong class="errorTitle">405</strong>
+            <p class="psmall">Method Not Allowed</p>
+          </td>
+          <td class="errorDescription">Trataste de ingresar a un recurso con un método inválido</td>
+        </tr>
+        <tr>
+          <td style="text-align: right"><strong class="errorTitle">406</strong>
+            <p class="psmall">Not Acceptable</p>
+          </td>
+          <td class="errorDescription">Solicitaste un formato que no es json</td>
+        </tr>
+        <tr>
+          <td style="text-align: right"><strong class="errorTitle">410</strong>
+            <p class="psmall">Gone</p>
+          </td>
+          <td class="errorDescription">El recurso solicitado fue removido de nuestros servidores</td>
+        </tr>
+        <tr>
+          <td style="text-align: right"><strong class="errorTitle">422</strong>
+            <p class="psmall">Unprocessable Entity</p>
+          </td>
+          <td class="errorDescription">No podemos procesar tu solicitud, revísala.</td>
+        </tr>
+        <tr>
+          <td style="text-align: right"><strong class="errorTitle">429</strong>
+            <p class="psmall">Too Many Requests</p>
+          </td>
+          <td class="errorDescription">¡Estás solicitando muchos recursos! ¡Detente!</td>
+        </tr>
+        <tr>
+          <td style="text-align: right"><strong class="errorTitle">500</strong>
+            <p class="psmall">Internal Server Error</p>
+          </td>
+          <td class="errorDescription">Tuvimos un problema con nuestro servidor. Inténtalo nuevamente más tarde.</td>
+        </tr>
+        <tr>
+          <td style="text-align: right"><strong class="errorTitle">503</strong>
+            <p class="psmall">Service Unavailable</p>
+          </td>
+          <td class="errorDescription">Estamos offline por mantenimiento. Inténtalo nuevamente más tarde</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    # Acceso a la API
+    Si tienes una cuenta en payku, puedes acceder a la API REST mediante los siguientes endpoints:
+
+    <div class="content">
+      <table class="center smallTable">
+        <thead>
+          <tr>
+            <th style="text-align:center;"><strong>Site</strong></th>
+            <th style="text-align:center;"><strong>BASE URL FOR REST ENDPOINT</strong></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Production</strong></td>
+            <td align="center"><a target="_blank" href="https://app.payku.cl/api">https://app.payku.cl/api</a></td>
+          </tr>
+          <tr>
+            <td><strong>Sandbox</strong></td>
+            <td><a target="_blank" href="https://des.payku.cl/api">https://des.payku.cl/api</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    - **Producción**: proporciona acceso directo para generar transacciones reales.
+    - **Sandbox**: permite probar su integración sin afectar los datos reales.
+
+    Para realizar pruebas a nuestra API de forma rapida puede utilizar la colección y el ambiente de Postman
+    que se encuentran en el siguiente repositorio: <a target="_blank" href="https://github.com/Paykucl/doc-apirest-postman">Colección postman</a>
+
+    # Tarjetas de prueba
+
+    Para realizar pruebas de transacciones utilice estas tarjetas:
+
+    <div class="content">
+      <table class="center">
+        <thead>
+          <tr>
+            <th style="text-align:center; width:25%"><strong>Tipo de tarjeta</strong></th>
+            <th style="text-align:center; width:37.5%"><strong>Detalle</strong></th>
+            <th style="text-align:center; width:37.5%"><strong>Resultado</strong></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>VISA</td>
+            <td align="center">4051 8856 0044 6623 CVV 123 cualquier fecha de expiración</td>
+            <td align="center">Genera transacciones aprobadas.</td>
+          </tr>
+          <tr>
+            <td>AMEX</td>
+            <td align="center">3700 0000 0002 032 CVV 1234 cualquier fecha de expiración</td>
+            <td align="center">Genera transacciones aprobadas.</td>
+          </tr>
+          <tr>
+            <td>MASTERCARD</td>
+            <td align="center">5186 0595 5959 0568 CVV 123 cualquier fecha de expiración</td>
+            <td align="center">Genera transacciones rechazadas.</td>
+          </tr>
+          <tr>
+            <td>Redcompra</td>
+            <td>4051 8842 3993 7763</td>
+            <td align="center">Genera transacciones aprobadas (para operaciones que permiten débito Redcompra y prepago)</td>
+          </tr>
+          <tr>
+            <td>Redcompra</td>
+            <td>5186 0085 4123 3829</td>
+            <td align="center">Genera transacciones rechazadas (para operaciones que permiten débito Redcompra y prepago)</td>
+          </tr>
+          <tr>
+            <td>Prepago VISA</td>
+            <td>4051 8860 0005 6590 CVV 123 cualquier fecha de expiración</td>
+            <td align="center">Genera transacciones aprobadas.</td>
+          </tr>
+          <tr>
+            <td>Prepago MASTERCARD</td>
+            <td>5186 1741 1062 9480 CVV 123 cualquier fecha de expiración</td>
+            <td align="center">Genera transacciones rechazadas.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    Cuando aparece el formulario de autenticación con RUT y clave, se debe usar el RUT 11.111.111-1 y la clave 123.
+    
+
 paths:
   /api/liset:
     post:
