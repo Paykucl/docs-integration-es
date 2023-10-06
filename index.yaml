@@ -1,5 +1,12 @@
 openapi: 3.0.0
+servers:
+  - url: "https://app.liset.cl"
+    description: Default server
+  - url: "https://des.liset.cl"
+    description: Sandbox server
 info:
+  description: |
+    Seleccione el idioma de la documentación: ES | <a href="https://endocs.liset.cl/">EN</a>
   version: "2.1.01"
   title: liset API
   termsOfService: "https://liset.cl/legal/"
@@ -9,14 +16,6 @@ info:
   license:
     name: Apache 2.0
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-servers:
-  - url: "https://app.liset.cl"
-    description: Default server
-  - url: "https://des.liset.cl"
-    description: Sandbox server
-info:
-  description: |
-    Seleccione el idioma de la documentación: ES | <a href="https://endocs.payku.cl/">EN</a>
 paths:
   /api/liset:
     post:
