@@ -7,6 +7,11 @@ servers:
 info:
   description: |
     Seleccione el idioma de la documentación: ES | <a href="https://endocs.liset.cl/">EN</a>
+
+    # INTRODUCCION
+    aqui va algo:
+      - **aqui va el paso 1**
+
   version: "2.1.01"
   title: liset API
   termsOfService: "https://liset.cl/legal/"
