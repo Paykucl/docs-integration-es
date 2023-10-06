@@ -1,6 +1,65 @@
 openapi: 3.0.0
+info:
+  version: "2.1.01"
+  title: liset API
+  termsOfService: "https://liset.cl/legal/"
+  contact:
+    email: contacto@liset.cl
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+  license:
+    name: Apache 2.0
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
 servers:
-  - url: "https://app.payku.cl/"
+  - url: "https://app.liset.cl"
     description: Default server
-  - url: "https://des.payku.cl/"
+  - url: "https://des.liset.cl"
     description: Sandbox server
+paths:
+  /api/liset:
+    post:
+      operationId: "miOperacion"
+      tags:
+        - liset
+      summary: Obtener conciliaciones.
+      description: Descripción de la operación.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestBody"
+      responses:
+        "200":
+          description: Respuesta exitosa.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+components:
+  schemas:
+    RequestBody:
+      type: object
+      properties:
+        parameter_1:
+          description: Nombre del parámetro
+          type: string
+          example: "keyValue"
+        parameter_2:
+          description: Nombre del parámetro
+          type: string
+          example: "keyValue"
+        order_ext:
+          description: Nombre de la orden externa  (Opcional)
+          type: string
+          example: "fff-777"
+    Response:
+      type: object
+      properties:
+        parameter_1:
+          description: Nombre del parámetro
+          type: string
+          example: "keyValue"
+        parameter_2:
+          description: Nombre del parámetro
+          type: string
+          example: "keyValue"
