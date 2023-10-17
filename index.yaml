@@ -482,6 +482,7 @@ info:
         console.log(result)
       }
     ```
+
     **Nota:** Luego de realizar el pago a terceros payku respondera de forma automática al endpoint ingresado en urlnotify el resultado de la operación.<br>
       **Ejemplo Aprobado:**<br>
           {<br>
@@ -506,6 +507,14 @@ info:
           "update_at" : "2023-08-24 12:29:35" <br>
           }<br>
 
+      - una vez creada la transacción, le mostrará la siguiente respuesta: 
+      ```javascript
+      {
+        "status": "success",
+        "identifier_wallet": "wa39dba99caa4cc28d",
+        "identifier_payout": "mor963fc9d2e62dd31"
+      }
+      ```
     # Notificación de resultado del pago al comercio (callback)
    
     Luego de que el cliente finalice el proceso de pago en su entidad bancaria, payku responderá de forma automática al Endpoint ingresado en **“urlnotify”** el resultado de la operación bancaria.
