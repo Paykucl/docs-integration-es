@@ -306,7 +306,11 @@ info:
     ```
 
     # Payout 
-    Permite generar transacciones bancarias desde tu billetera virtual **payku**. Este método permite crear una orden de pago a un tercero utilizando los fondos de tu billetera virtual **payku**, para ello, debe hacer lo siguiente:
+    Permite generar transacciones bancarias desde tu billetera virtual **payku**. Este método permite crear una orden de pago a un tercero utilizando los fondos de tu billetera virtual **payku**.
+
+    ## Payout CLP
+    Para crear transacciones en **peso chileno** debe hacer lo siguiente:
+
     - Cree una variable estableciendo los parámetros para la petición de la API como se muestra a continuación:
 
     ```javascript
@@ -515,8 +519,228 @@ info:
         "identifier_payout": "mor963fc9d2e62dd31"
       }
       ```
+
+
+    ## Payout VES
+    Para crear transacciones en **bolivares** debe hacer lo siguiente:
+
+    - Cree una variable estableciendo los parámetros para la petición de la API como se muestra a continuación:
+
+    ```javascript
+      let data = {
+        "email": "johndoe@example.com",
+        "phone": "04149876543",
+        "subject": "payOut description 9876",
+        "currency": "VES",
+        "order": 9876,
+        "amount":  1000,
+        "accountbank_name": "Jhon Doe",
+        "accountbank_rut": "V23987456",
+        "accountbank_sbif": "0001",
+        "accountbank_type": "1",
+        "accountbank_num": "04149876543",
+        "url_notify": "https://youwebsite.com/urlnotify?orderClient=9876",
+        "additional_parameters":
+          {
+          "custom_parameter_1": "keyValue",
+          "custom_parameter_2": "SpecificValue2",
+          "external_reference": "REF-777"
+          }
+      };
+
+      request(data);
+    ```
+
+    ### Descripción de los parámetros:
+    <div class="content-parametros">
+    <table>
+      <tbody>
+        <tr>
+          <td style="text-align: right">
+            <p class="psmall"><strong>"email"<strong></p>
+          </td>
+          <td class="Description">Email del usuario.</td>
+        </tr>
+        <tr>
+          <td style="text-align: right">
+            <p class="psmall"><strong>"Phone"<strong></p>
+          </td>
+          <td class="Description">Télefono del usuario.</td>
+        </tr>
+        <tr>
+          <td style="text-align: right">
+            <p class="psmall"><strong>"subject"<strong></p>
+          </td>
+          <td class="Description">Descripción de la orden.</td>
+        </tr>
+        <tr>
+          <td style="text-align: right">
+            <p class="psmall"><strong>"currency"<strong></p>
+          </td>
+          <td class="Description">VES</td>
+        </tr>
+        <tr>
+          <td style="text-align: right">
+            <p class="psmall"><strong>"order"<strong></p>
+          </td>
+          <td class="Description">Orden del comercio.</td>
+        </tr>
+        <tr>
+          <td style="text-align: right">
+            <p class="psmall"><strong>"amount"<strong></p>
+          </td>
+          <td class="Description">Monto de la orden.</td>
+        </tr>
+        <tr>
+          <td style="text-align: right">
+            <p class="psmall"><strong>"accountbank_name"<strong></p>
+          </td>
+          <td class="Description">Nombre del titular de la cuenta.</td>
+        </tr>
+        <tr>
+          <td style="text-align: right">
+            <p class="psmall"><strong>"accountbank_rut"<strong></p>
+          </td>
+          <td class="Description">Cédula de identidad del titular Formato: (V/E/J) VXXXXXXXX. <br>
+            <strong>Ejemplo:</strong> V23987456. <br>
+            El número de cédula debe ser sin puntos ni guiones.
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: right">
+            <p class="psmall"><strong>"accountbank_sbif"<strong></p>
+          </td>
+          <td class="Description">Código del banco al que pertenece la cuenta bancaria.
+              <br>
+              0102 Banco De Venezuela
+              <br>
+              0104 Banco Venezolano De Credito
+              <br>
+              0105 Banco Mercantil
+              <br>
+              0108 Banco Provincial
+              <br>
+              0114 Banco Del Caribe
+              <br>
+              0115 Banco Exterior
+              <br>
+              0128 Banco Caroni
+              <br>
+              0134 Banesco
+              <br>
+              0138 Banco Plaza
+              <br>
+              0151 Banco Fondo Común
+              <br>
+              0156 100% Banco
+              <br>
+              0163 Banco Del Tesoro
+              <br>
+              0171 Banco Activo
+              <br>
+              0172 Bancamiga
+              <br>
+              0174 Banplus
+              <br>
+              0175 Banco Bicentenario
+              <br>
+              0191 Banco Nacional De Credito
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: right">
+          <p class="psmall"><strong>"accountbank_type"<strong></p>
+        </td>
+        <td class="Description">Tipo de cuenta.
+        <br>
+          1 Corriente
+          <br>
+          3 Ahorro     
+        </td>
+      </tr>
+        <tr>
+          <td style="text-align: right">
+            <p class="psmall"><strong>"accountbank_num"<strong></p>
+          </td>
+          <td class="Description">Número de cuenta del cliente en Venezuela Formato: (0412 / 0414 / 0424 / 0426 / 0416) 9876543.
+          <br>
+          <strong>Nota:</strong> los primeros 4 dígitos hace referencia al código de área <strong>"(0414)"</strong>, el resto es el número de teléfono <strong>"9876543"</strong>
+          <br>
+          <strong>Ejemplo: 04149876543 </strong>
+          <br>
+           <strong>Nota:</strong> Este dato debe ser de tipo string.
+          <br>
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: right">
+            <p class="psmall"><strong>"urlnotify"<strong></p>
+          </td>
+          <td class="Description">Url callback del comercio donde payku notificara el pago.</td>
+        </tr>
+        <tr>
+          <td style="text-align: right">
+            <p class="psmall"><strong>"additional_parameters"<strong></p>
+          </td>
+          <td class="Description">Parámetros adicionales del cliente (Opcional).</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    - Cree una función con una petición fetch consultando el Endpoint del api. En **"sign"** debe ir la firma que ya ha creado y en **“Authorization”** debe colocar su token público descrito anteriormente.
+     
+     ```javascript
+      const request = async (data) => {
+        const response = await fetch('https://BASE_URL/api/walet/payout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Sign': 'SHA256-REQUEST-PATH-VALUE-TOKEN-PRIVADO',
+            'Authorization': 'Bearer TOKEN-PUBLICO'
+          },
+          body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        console.log(result)
+      }
+    ```
+
+    **Nota:** Luego de realizar el pago a terceros payku respondera de forma automática al endpoint ingresado en **urlnotify** el resultado de la operación.<br>
+      **Ejemplo Aprobado:**<br>
+          {<br>
+          "id": "morexxzxxx",
+          <br>
+          "identifier_payout": "morexxzxxx",
+          <br>
+          "order": "367734544",
+          <br>
+          "status" : "success",
+          <br>
+          "update_at" : "2023-08-24 12:29:35"
+          <br>
+          }
+          <br>
+      **Ejemplo Rechazado:** <br>
+          { <br>
+          "id": "morexzxxxx", <br>
+          "identifier_payout": "morexzxxxx", <br>
+          "order": "367734544", <br>
+          "status" : "banking_error", <br>
+          "update_at" : "2023-08-24 12:29:35" <br>
+          }<br>
+
+      - Una vez creada la transacción, le mostrará la siguiente respuesta: 
+      ```javascript
+      {
+        "status": "success",
+        "identifier_wallet": "wa39dba99caa4cc28d",
+        "identifier_payout": "mor963fc9d2e62dd31"
+      }
+      ```
+
     # Notificación de resultado del pago al comercio (callback)
-   
+
     Luego de que el cliente finalice el proceso de pago en su entidad bancaria, payku responderá de forma automática al Endpoint ingresado en **“urlnotify”** el resultado de la operación bancaria.
 
     **Ejemplo Aprobado:**  <br>
