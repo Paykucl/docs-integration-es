@@ -8,6 +8,7 @@ info:
   description: |
     Seleccione el idioma de la documentación: ES | <a href="https://endocs.payku.cl/">EN</a>
     1 prueba con integracion continua
+    2 prueba con integracion continua para el deploy
 
     # Integración
     Payku tiene a su disposición diferentes ambientes:
