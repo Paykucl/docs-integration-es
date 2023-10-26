@@ -6,7 +6,7 @@ servers:
     description: Sandbox server
 info:
   description: |
-    Seleccione el idioma de la documentación: ES | <a href="https://endocs.payku.cl/">EN</a>
+    Seleccione el idioma de la documentación: ES | <a href="https://docs-integration-en.payku.cl/">EN</a>
 
     # Integración
     Payku tiene a su disposición diferentes ambientes:
